@@ -7,6 +7,15 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,9 +36,52 @@ jobs:
           python3 -m pip install --quiet pymupdf
           python3 -c "import fitz; t = fitz.open('cv.pdf')[0].get_text(); assert 'Adrián Koller' in t, 'Name not extractable'; print('ATS extraction OK')"
 
-      - name: Upload compiled PDF
+      - name: Stage Pages site
+        run: |
+          mkdir -p _site
+          cp cv.pdf _site/cv.pdf
+          cat > _site/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <title>Adrián Koller — CV</title>
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <meta http-equiv="refresh" content="0; url=cv.pdf">
+            <link rel="canonical" href="cv.pdf">
+            <style>
+              body{font:16px/1.5 system-ui,sans-serif;margin:3rem auto;max-width:32rem;color:#0F2350;text-align:center}
+              a{color:#0F2350}
+            </style>
+          </head>
+          <body>
+            <p>Redirecting to <a href="cv.pdf">cv.pdf</a>&hellip;</p>
+          </body>
+          </html>
+          HTML
+
+      - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
           name: cv-pdf
           path: cv.pdf
           if-no-files-found: error
+
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+

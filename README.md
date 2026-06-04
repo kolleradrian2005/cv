@@ -86,13 +86,21 @@ README.md       # This file
 - If a word hyphenates badly after edits, add it (without explicit hyphens) to
   the `\hyphenation{...}` list at the top of `cv.tex`.
 
-## Continuous build
+## Continuous build & deploy
 
 Every push to `main` and every PR triggers
-[`.github/workflows/build.yml`](.github/workflows/build.yml), which installs
-Tectonic, compiles `cv.tex`, runs an ATS-extraction sanity check, and uploads
-the resulting `cv.pdf` as a workflow artifact (`cv-pdf`). You can download the
-latest build from the *Actions* tab.
+[`.github/workflows/build.yml`](.github/workflows/build.yml), which:
+
+1. Installs Tectonic and compiles `cv.tex`.
+2. Runs an ATS-extraction sanity check (asserts the name is extractable).
+3. Uploads the resulting `cv.pdf` as a workflow artifact (`cv-pdf`).
+4. On pushes to `main`, deploys the PDF to **GitHub Pages**, available at
+   `https://<your-user>.github.io/<repo>/cv.pdf` (with a redirect from the
+   site root).
+
+To enable Pages: repository **Settings → Pages → Build and deployment → Source:
+GitHub Actions**. After the first successful run on `main` the URL will appear
+in the *Actions* run summary.
 
 ## License
 
