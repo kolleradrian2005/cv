@@ -1,0 +1,26 @@
+# Source material (private)
+ireland_cv.pdf
+
+# Local toolchain (install your own tectonic)
+tectonic_bin/
+
+# Preview renders / debug artifacts
+*_zoom.png
+cv_p*.png
+cv_hi.png
+
+# LaTeX build intermediates
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/

@@ -1,0 +1,360 @@
+%% Adrián Koller — CV (creative sidebar / timeline, v2)
+%% Compile with: pdflatex cv.tex   (works on Overleaf)
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[a4paper,margin=0pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{calc,tikzmark,shapes.misc}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+\frenchspacing
+
+%---------- Palette ----------
+\definecolor{ink}     {HTML}{0F2350}   % midnight blue (accent)
+\definecolor{deepink} {HTML}{08153A}   % deeper variant for header
+\definecolor{body}    {HTML}{2A2A2A}
+\definecolor{mute}    {HTML}{8A8A8A}
+\definecolor{rule}    {HTML}{D9D9D9}
+\definecolor{sidebg}  {HTML}{F4F2EC}   % warm off-white sidebar
+\definecolor{dotfill} {HTML}{C8C5BE}   % muted dots
+
+\color{body}
+\hypersetup{colorlinks=true, urlcolor=ink, linkcolor=ink,
+  pdftitle={Adrián Koller — Software Developer CV},
+  pdfauthor={Adrián Koller},
+  pdfsubject={Curriculum Vitae},
+  pdfkeywords={Software Developer, Mobile, Full-Stack, Flutter, NestJS, Rust, C\#, Ireland}}
+
+% Prevent ugly hyphenation breaks on common words
+\hyphenation{Ireland Windows GitHub CircleCI KeepYourHabits
+  integrate integrating integration shipping codebase performance scanning}
+
+%---------- Geometry ----------
+\newlength{\sidewidth}\setlength{\sidewidth}{6.0cm}
+\newlength{\mainpad}\setlength{\mainpad}{0.8cm}
+\newlength{\sidepad}\setlength{\sidepad}{0.7cm}
+\newlength{\rrail}\setlength{\rrail}{0.55cm}    % rail offset (main column)
+
+%---------- Lists ----------
+\setlist[itemize]{nosep, leftmargin=1.0em,
+  label={\textcolor{ink}{\footnotesize\textbullet}},
+  topsep=1pt, itemsep=1pt, parsep=0pt}
+
+%---------- Sidebar headers / lines / dots / lang pills ----------
+\newcommand{\sidehead}[2]{%
+  \vspace{9pt}%
+  {\color{ink}\small\bfseries\faIcon{#1}\hspace{6pt}\MakeUppercase{#2}}\par
+  \vspace{1pt}{\color{ink}\rule{18pt}{1.2pt}}\par\vspace{4pt}}
+
+\newcommand{\sideline}[2]{%
+  \noindent\makebox[14pt][l]{\color{ink}\footnotesize\faIcon{#1}}%
+  {\footnotesize #2}\par\vspace{2pt}}
+
+\newcommand{\skilldots}[2]{%
+  \noindent{\footnotesize #1}\hfill%
+  \foreach \n in {1,...,5}{%
+    \ifnum\n>#2 \tikz[baseline=-0.5ex]\draw[fill=dotfill,draw=dotfill] (0,0) circle (1.6pt);%
+    \else \tikz[baseline=-0.5ex]\draw[fill=ink,draw=ink] (0,0) circle (1.6pt);%
+    \fi\hspace{1pt}}\par\vspace{2pt}}
+
+\newcommand{\langline}[3]{%
+  \noindent{\footnotesize\bfseries #1}\hfill%
+  {\footnotesize\color{mute}#2}\hspace{4pt}%
+  \tikz[baseline=-0.6ex]\node[fill=ink, text=white, rounded corners=2pt,
+    inner xsep=0pt, inner ysep=1.5pt, minimum width=22pt, align=center,
+    font=\sffamily\fontsize{6.8}{8}\selectfont\bfseries]{#3};%
+  \par\vspace{2pt}}
+
+\newcommand{\chip}[1]{%
+  \tikz[baseline=-0.55ex]\node[shape=rounded rectangle, rounded rectangle arc length=180,
+    fill=ink!7, draw=ink!22, line width=0.3pt, text=ink,
+    inner xsep=5pt, inner ysep=1.8pt,
+    font=\sffamily\fontsize{6.8}{8}\selectfont]{#1};\hspace{5pt plus 1pt}}
+
+%---------- Main section header (icon + label + flowing rule) ----------
+\newcommand{\mainhead}[2]{%
+  \vspace{8pt}\noindent
+  {\color{ink}\normalsize\bfseries\faIcon{#1}\hspace{6pt}\MakeUppercase{#2}}%
+  \hspace{8pt}{\color{ink}\leaders\hrule height 0.6pt\hfill\kern0pt}\par\vspace{4pt}}
+
+%---------- Timeline (rail + markers, per-section) ----------
+\newcounter{tlmark}
+% \tlmarker — places only a tikzmark; markers are drawn at the end of the environment
+% on top of the rail, so the rail+circles are pixel-aligned (bead pattern).
+\newcommand{\tlsection}{default}
+\newcommand{\rdoty}{2pt}% vertical offset of dot center from text baseline
+\newcommand{\tlmarker}{%
+  \stepcounter{tlmark}%
+  \tikzmark{tl-\tlsection-\arabic{tlmark}}%
+}
+
+% Timeline entry — places a marker, then content.
+\newcommand{\tlentry}[4]{%
+  \par\vspace{4pt}%
+  \noindent\begin{minipage}[t]{\linewidth}
+  \tlmarker
+  {\footnotesize\color{mute}#1}\hfill\strut\\[-2pt]
+  {\bfseries\color{ink}#2}\ifx&#3&\else\hspace{4pt}{\footnotesize\color{mute}#3}\fi\par\vspace{2pt}
+  #4
+  \end{minipage}\par\vspace{2pt}}
+
+\newcommand{\eduentry}[4]{%
+  \par\vspace{3pt}%
+  \noindent\begin{minipage}[t]{\linewidth}
+  \tlmarker
+  {\footnotesize\color{mute}#1}\hfill\strut\\[-2pt]
+  {\bfseries\color{ink}#2}\par
+  {\footnotesize\color{mute}#3}\ifx&#4&\else\par{\footnotesize\color{mute}\itshape#4}\fi
+  \end{minipage}\par\vspace{2pt}}
+
+% Timeline environment: resets counter, sets section id, draws rail at end
+\newenvironment{timeline}[1]
+  {\setcounter{tlmark}{0}%
+   \renewcommand{\tlsection}{#1}%
+   \hspace{\rrail}\begin{minipage}[t]{\dimexpr\linewidth-\rrail\relax}}
+  {\begin{tikzpicture}[remember picture, overlay]
+     \ifnum\value{tlmark}>1
+       \draw[ink, line width=0.9pt]
+         ($(pic cs:tl-\tlsection-1)+(-\rrail,\rdoty)$) --
+         ($(pic cs:tl-\tlsection-\arabic{tlmark})+(-\rrail,\rdoty)$);
+     \fi
+     \foreach \i in {1,...,\arabic{tlmark}}{%
+       \fill[ink]   ($(pic cs:tl-\tlsection-\i)+(-\rrail,\rdoty)$) circle (3.6pt);
+       \fill[white] ($(pic cs:tl-\tlsection-\i)+(-\rrail,\rdoty)$) circle (1.7pt);}
+   \end{tikzpicture}%
+   \end{minipage}}
+
+%---------- Document ----------
+\begin{document}
+\pagestyle{empty}
+
+% ========== FULL-WIDTH DARK HEADER + SIDEBAR BACKGROUND ==========
+% ATS-readable plain name (renders in dark color over dark band — invisible to humans
+% but extractable as "Adrián Koller" + "Software Developer" by parsers)
+\begin{tikzpicture}[remember picture, overlay]
+  \node[anchor=north west, text=deepink, inner sep=0pt, font=\sffamily\fontsize{1}{1}\selectfont]
+    at ([xshift=0.1cm, yshift=-0.1cm]current page.north west)
+    {Adrián Koller \textendash{} Software Developer \textendash{} Mobile, Full-Stack, Low-Level Systems};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture, overlay]
+  % Sidebar warm background full height
+  \fill[sidebg] (current page.north west)
+    rectangle ([xshift=\sidewidth]current page.south west);
+
+  % FULL-WIDTH dark header band (2.5cm tall)
+  \fill[deepink] (current page.north west)
+    rectangle ([yshift=-2.5cm]current page.north east);
+
+  % Subtle vertical separator below the header (sidebar/main divide)
+  \draw[rule, line width=0.4pt]
+    ([xshift=\sidewidth, yshift=-2.5cm]current page.north west) --
+    ([xshift=\sidewidth]current page.south west);
+
+  % ---------- LEFT: name lockup (tracked caps for elegance) ----------
+  \node[anchor=west, text=white, inner sep=0pt]
+    at ([xshift=0.7cm, yshift=-1.0cm]current page.north west)
+    {\sffamily\fontsize{20}{22}\selectfont\bfseries
+     A\kern5pt D\kern5pt R\kern5pt I\kern5pt \'A\kern5pt N};
+  \node[anchor=west, text=white, inner sep=0pt]
+    at ([xshift=0.7cm, yshift=-1.7cm]current page.north west)
+    {\sffamily\fontsize{20}{22}\selectfont\bfseries
+     K\kern5pt O\kern5pt L\kern5pt L\kern5pt E\kern5pt R};
+  % Decoration: short rule + dot beneath the name
+  \draw[white, line width=1.2pt, opacity=0.75]
+    ([xshift=0.7cm, yshift=-2.2cm]current page.north west) --
+    ([xshift=2.0cm, yshift=-2.2cm]current page.north west);
+  \fill[white, opacity=0.75]
+    ([xshift=2.2cm, yshift=-2.2cm]current page.north west) circle (1.8pt);
+
+  % ---------- RIGHT: role headline + tagline ----------
+  % Big role headline, right-aligned
+  \node[anchor=east, text=white, inner sep=0pt]
+    at ([xshift=-0.7cm, yshift=-1.35cm]current page.north east)
+    {\sffamily\fontsize{18}{20}\selectfont\bfseries Software Developer};
+  % Tagline tracked caps, sits above the rule
+  \node[anchor=east, text=white, opacity=0.7, inner sep=0pt]
+    at ([xshift=-0.7cm, yshift=-1.8cm]current page.north east)
+    {\sffamily\fontsize{7.5}{9}\selectfont\bfseries
+     M O B I L E\hspace{6pt}\textperiodcentered\hspace{6pt}%
+     F U L L - S T A C K\hspace{6pt}\textperiodcentered\hspace{6pt}%
+     L O W - L E V E L\hspace{4pt} S Y S T E M S};
+  % Decoration line + dot (aligned with left at -2.15cm)
+  \draw[white, line width=1.2pt, opacity=0.75]
+    ([xshift=-3.0cm, yshift=-2.2cm]current page.north east) --
+    ([xshift=-0.9cm, yshift=-2.2cm]current page.north east);
+  \fill[white, opacity=0.75]
+    ([xshift=-0.7cm, yshift=-2.2cm]current page.north east) circle (1.8pt);
+
+\end{tikzpicture}
+
+% ========== SIDEBAR CONTENT ==========
+\noindent\begin{minipage}[t]{\sidewidth}
+  \vspace{2.2cm}% clear the full-width dark header band
+  \hspace{\sidepad}\begin{minipage}[t]{\dimexpr\sidewidth-2\sidepad\relax}
+    \color{body}
+    \raggedright\hyphenpenalty=10000\exhyphenpenalty=10000
+
+    %---- Contact
+    \sidehead{address-card}{Contact}
+    \sideline{map-marker-alt}{Budapest, Hungary}
+    \sideline{envelope}{\href{mailto:kolleradrian2005@gmail.com}{kolleradrian2005@gmail.com}}
+    \sideline{phone}{+36 30 907 3040}
+    \sideline{linkedin}{\href{https://www.linkedin.com/in/adrián-koller-aba007319/}{adrián-koller}}
+    \sideline{github}{\href{https://github.com/kolleradrian2005}{kolleradrian2005}}
+
+    %---- Eligibility
+    \sidehead{passport}{Eligibility}
+    {\footnotesize\textbf{\color{ink}EU citizen.}
+    Eligible to work in Ireland with no visa sponsorship.
+    Open to relocation.}\par
+
+    %---- Top skills (proficiency)
+    \sidehead{code}{Top Skills}
+    \skilldots{Flutter / Dart}{5}
+    \skilldots{NestJS / Node.js}{4}
+    \skilldots{Rust}{4}
+    \skilldots{C\# / .NET}{4}
+    \skilldots{Python}{4}
+    \skilldots{TypeScript / JS}{3}
+
+    %---- Tooling
+    \sidehead{tools}{Also Familiar With}
+    {\setlength{\lineskip}{4pt}\setlength{\baselineskip}{12pt}%
+    \chip{MCP servers}\chip{Unity}\chip{AWS}\\
+    \chip{GitLab CI}\chip{Docker}\chip{Java}\\
+    \chip{CircleCI}\chip{OpenGL}\chip{Git}\par}
+
+    %---- Languages
+    \sidehead{language}{Languages}
+    \langline{Hungarian}{Native}{NAT}
+    \langline{English}{Proficient}{C1}
+    \langline{German}{Independent}{B2}
+
+    %---- Interests
+    \sidehead{heart}{Interests}
+    \sideline{microchip}{Low-level \& graphics code}
+    \sideline{gamepad}{Game development}
+    \sideline{volleyball-ball}{Volleyball}
+
+    %---- Availability
+    \sidehead{calendar-check}{Availability}
+    {\footnotesize Open to \textbf{\color{ink}Software Engineer} roles in
+    Ireland. Relocating to Dublin in \textbf{Sep 2026} (Irish number on
+    arrival); remote or hybrid sooner.}\par
+
+  \end{minipage}
+\end{minipage}%
+\hspace{0pt}%
+\begin{minipage}[t]{\dimexpr\paperwidth-\sidewidth\relax}
+  \vspace{2.2cm}% clear the full-width dark header band
+  \hspace{\mainpad}\begin{minipage}[t]{\dimexpr\paperwidth-\sidewidth-2\mainpad\relax}
+    \color{body}
+
+    %---- Profile (no duplicated name; sidebar already shows it)
+    \mainhead{user}{Profile}
+    {\small Final-year CS student and working software developer across
+    \textbf{mobile, full-stack, and low-level} engineering. Have shipped
+    Flutter/NestJS apps, co-founded two startups, and currently integrate
+    LLM tooling into a C\#/.NET enterprise codebase. Seeking a
+    \textbf{software engineering role in Ireland} where I can own features
+    end-to-end and grow in a strong engineering culture.}\par
+
+    %---- Experience
+    \mainhead{briefcase}{Experience}
+    \begin{timeline}{exp}
+    \tlentry{May 2025 \textendash{} Present}
+      {Software Developer}
+      {One Identity Hungary \textendash{} Budapest \textendash{} \textit{started as Software Tester}}
+      {\small\begin{itemize}
+        \item Integrated GitHub Copilot and internal AI tooling by setting up
+          \textbf{MCP servers}, bridging LLMs with the local C\#/.NET dev
+          environment for Active Directory and Entra ID products.
+        \item Engineered developer personas and standardised context access
+          to streamline day-to-day .NET Framework work.
+        \item R\&D escalation point for customer support; previously built
+          automated test suites for Windows apps and ran manual QA across web,
+          console, and SSO (RSTS) components.
+      \end{itemize}}
+    \end{timeline}
+
+    %---- Selected Projects
+    \mainhead{rocket}{Selected Projects}
+    \begin{timeline}{prj}
+    \tlentry{Aug 2023 \textendash{} Present}
+      {Lumina}
+      {Thesis \textendash{} game engine in \textbf{Rust} \& \textbf{OpenGL}}
+      {\small\begin{itemize}
+        \item Built from scratch: rendering pipeline, ECS-style game
+          architecture, and data-driven performance work.
+        \item Cross-platform compilation targeting desktop and mobile;
+          hands-on understanding of low-level system interactions.
+      \end{itemize}}
+
+    \tlentry{Jul 2025 \textendash{} Present}
+      {KeepYourHabits}
+      {Co-founder \textendash{} habit-tracking mobile app \textendash{}
+       \textbf{Flutter, NestJS, AWS, Docker, CI/CD}}
+      {\small\begin{itemize}
+        \item Architected the full-stack infrastructure end-to-end, from
+          mobile client to backend services and cloud deployment.
+        \item Used AI-assisted coding to prototype the architecture
+          rapidly; kept scope tight to ship a leaner MVP. Launch imminent.
+      \end{itemize}}
+
+    \tlentry{Apr 2024 \textendash{} Nov 2024}
+      {Touch}
+      {Co-founder \textendash{} digital business-card app \textendash{}
+       \textbf{Flutter, NestJS, Swift, CircleCI, AWS}}
+      {\small\begin{itemize}
+        \item Built at a university innovation lab; implemented iOS-native
+          features in Swift: \textbf{NFC scanning, PKPass creation, and
+          Apple ID authentication}.
+        \item Automated App Store / Play Store deployment with CircleCI;
+          helped migrate the backend from Laravel (PHP) to NestJS (Node.js).
+      \end{itemize}}
+
+    \tlentry{Feb \textendash{} May 2025}
+      {Wild Trails}
+      {University team \textendash{} 3D tycoon park simulation in
+       \textbf{Unity, C\#}}
+      {\small\begin{itemize}
+        \item Designed a procedural terrain system using noise algorithms;
+          implemented save/load for complex game state.
+        \item Built placement algorithms for road networks and lakes;
+          set up the GitLab CI pipeline.
+      \end{itemize}}
+    \end{timeline}
+
+    %---- Education
+    \mainhead{graduation-cap}{Education}
+    \begin{timeline}{edu}
+    \eduentry{Starting Sep 2026}
+      {MSc Computer Science \textendash{} Augmented \& Virtual Reality}
+      {Trinity College Dublin, Ireland}
+      {Conditional offer accepted; pending BSc completion}
+
+    \eduentry{Jul 2023 \textendash{} Jun 2026}
+      {BSc Computer Science}
+      {Eötvös Loránd University (ELTE), Faculty of Informatics, Budapest}
+      {Final year \textendash{} expected completion Jun 2026}
+
+    \eduentry{Sep 2025 \textendash{} Jan 2026}
+      {Erasmus+ Exchange \textendash{} Informatics Engineering}
+      {Universitat Politècnica de València (ETSINF), Spain}
+      {Coursework: Network Information Security Technologies, Computer Architecture}
+    \end{timeline}
+
+  \end{minipage}
+\end{minipage}
+
+\end{document}
