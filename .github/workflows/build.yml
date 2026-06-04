@@ -1,0 +1,35 @@
+name: Build CV
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Tectonic
+        run: |
+          curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net | sh
+          sudo mv tectonic /usr/local/bin/
+          tectonic --version
+
+      - name: Compile cv.tex
+        run: tectonic -X compile cv.tex --keep-logs
+
+      - name: Sanity-check ATS extraction
+        run: |
+          python3 -m pip install --quiet pymupdf
+          python3 -c "import fitz; t = fitz.open('cv.pdf')[0].get_text(); assert 'Adrián Koller' in t, 'Name not extractable'; print('ATS extraction OK')"
+
+      - name: Upload compiled PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-pdf
+          path: cv.pdf
+          if-no-files-found: error
