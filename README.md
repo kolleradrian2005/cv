@@ -1,7 +1,7 @@
 # CV — Adrián Koller
 
-A single-page, ATS-friendly creative CV built in LaTeX/TikZ. Designed for
-backend, infrastructure, and software engineering applications in Ireland.
+A single-page, ATS-friendly creative CV built in LaTeX/TikZ. Designed for software
+engineering applications in Ireland (mobile, full-stack, low-level systems).
 
 The latest compiled output is committed as [`cv.pdf`](cv.pdf).
 
@@ -64,7 +64,7 @@ python -c "import fitz; print(fitz.open('cv.pdf')[0].get_text())"
 ```
 
 The first non-empty line should be
-`Adrián Koller – Software Developer – Backend, Infrastructure, Software Systems`.
+`Adrián Koller – Software Developer – Mobile, Full-Stack, Low-Level Systems`.
 
 ## Project layout
 
