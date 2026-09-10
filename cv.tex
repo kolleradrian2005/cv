@@ -45,9 +45,9 @@
 \newlength{\rrail}\setlength{\rrail}{0.55cm}    % rail offset (main column)
 
 %---------- Lists ----------
-\setlist[itemize]{nosep, leftmargin=1.0em,
+\setlist[itemize]{nosep, leftmargin=1.1em,
   label={\textcolor{ink}{\footnotesize\textbullet}},
-  topsep=1pt, itemsep=1pt, parsep=0pt}
+  topsep=2pt, itemsep=2pt, parsep=0pt}
 
 %---------- Sidebar headers / lines / dots / lang pills ----------
 \newcommand{\sidehead}[2]{%
@@ -207,7 +207,7 @@
     %---- Contact
     \sidehead{address-card}{Contact}
     \sideline{map-marker-alt}{Dublin, Ireland}
-    \sideline{envelope}{\href{mailto:kolleradrian2005@gmail.com}{kolleradrian2005@gmail.com}}
+    \sideline{envelope}{\href{mailto:akoller@tcd.ie}{akoller@tcd.ie}}
     \sideline{phone}{+36 30 907 3040}
     \sideline{linkedin}{\href{https://www.linkedin.com/in/adrián-koller-aba007319/}{adrián-koller}}
     \sideline{github}{\href{https://github.com/kolleradrian2005}{kolleradrian2005}}
@@ -227,7 +227,7 @@
     \skilldots{TypeScript / JS}{3}
 
     %---- Tooling
-    \sidehead{tools}{Also Familiar With}
+    \sidehead{plus-circle}{Also Skilled In}
     {\setlength{\lineskip}{4pt}\setlength{\baselineskip}{12pt}%
     \chip{MCP servers}\chip{Unity}\chip{AWS}\\
     \chip{GitLab CI}\chip{Docker}\chip{Java}\\
@@ -258,6 +258,7 @@
   \vspace{2.2cm}% clear the full-width dark header band
   \hspace{\mainpad}\begin{minipage}[t]{\dimexpr\paperwidth-\sidewidth-2\mainpad\relax}
     \color{body}
+    \linespread{1.05}\selectfont
 
     %---- Profile (no duplicated name; sidebar already shows it)
     \mainhead{user}{Profile}
@@ -273,7 +274,7 @@
     \begin{timeline}{exp}
     \tlentry{May 2025 \textendash{} Present}
       {Software Developer}
-      {One Identity Hungary \textendash{} Budapest \textendash{} \textit{started as Software Tester}}
+      {\textit{Started as Software Tester} \textendash{} One Identity Hungary \textendash{} Budapest, Hungary}
       {\small\begin{itemize}
         \item Integrated GitHub Copilot and internal AI tooling by setting up
           \textbf{MCP servers}, bridging LLMs with the local C\#/.NET dev
@@ -322,7 +323,7 @@
           helped migrate the backend from Laravel (PHP) to NestJS (Node.js).
       \end{itemize}}
 
-    \tlentry{Feb \textendash{} May 2025}
+    \tlentry{Feb 2025 \textendash{} May 2025}
       {Wild Trails}
       {University team \textendash{} 3D tycoon park simulation in
        \textbf{Unity, C\#}}
@@ -337,14 +338,14 @@
     %---- Education
     \mainhead{graduation-cap}{Education}
     \begin{timeline}{edu}
-    \eduentry{Sep 2026 \textendash{} Present}
+    \eduentry{Sep 2026 \textendash{} Sep 2027 (expected)}
       {MSc Computer Science \textendash{} Augmented \& Virtual Reality}
       {Trinity College Dublin, Ireland}
       {}
 
     \eduentry{Jul 2023 \textendash{} Jun 2026}
       {BSc Computer Science}
-      {Eötvös Loránd University (ELTE), Faculty of Informatics, Budapest}
+      {Eötvös Loránd University (ELTE), Faculty of Informatics, Budapest, Hungary}
       {}
 
     \eduentry{Sep 2025 \textendash{} Jan 2026}
