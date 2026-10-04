@@ -1,15 +1,15 @@
 import unittest
 
-import fitz
+import pymupdf
 
-from scripts.check_cv import ROOT, check_layout, check_text
+from scripts.check_cv import ROOT, check_layout, check_spatial_text, check_text
 
 
 class CVChecksTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.pdf = (ROOT / "cv.pdf").read_bytes()
-        with fitz.open(stream=cls.pdf, filetype="pdf") as document:
+        with pymupdf.open(stream=cls.pdf, filetype="pdf") as document:
             cls.text = document[0].get_text()
 
     def test_current_text(self):
@@ -45,18 +45,27 @@ class CVChecksTest(unittest.TestCase):
         text = self.text.replace("github.com/kolleradrian2005", "kolleradrian2005")
         self.assertTrue(any("visible URL" in error for error in check_text(text)))
 
+    def test_spatial_reordering_is_distinguished_from_text_loss(self):
+        text = "\n".join(reversed(self.text.splitlines()))
+        self.assertEqual(check_spatial_text(self.text, text), [])
+        self.assertTrue(check_text(text))
+
+    def test_spatial_text_loss_is_rejected(self):
+        text = self.text.replace("One Identity Hungary", "")
+        self.assertTrue(check_spatial_text(self.text, text))
+
     def test_tiny_hidden_text_is_rejected(self):
-        with fitz.open(stream=self.pdf, filetype="pdf") as document:
+        with pymupdf.open(stream=self.pdf, filetype="pdf") as document:
             document[0].insert_text((10, 10), "hidden name", fontsize=1)
             self.assertTrue(any("below 6pt" in error for error in check_layout(document)))
 
     def test_extra_page_is_rejected(self):
-        with fitz.open(stream=self.pdf, filetype="pdf") as document:
+        with pymupdf.open(stream=self.pdf, filetype="pdf") as document:
             document.new_page()
             self.assertTrue(any("Expected one page" in error for error in check_layout(document)))
 
     def test_off_page_text_is_rejected(self):
-        with fitz.open(stream=self.pdf, filetype="pdf") as document:
+        with pymupdf.open(stream=self.pdf, filetype="pdf") as document:
             document[0].insert_text((610, 100), "off-page content", fontsize=10)
             self.assertTrue(any("outside the page" in error for error in check_layout(document)))
 

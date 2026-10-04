@@ -64,7 +64,7 @@ You may need to run twice so cross-references settle.
 ### Render a PNG preview (optional)
 
 ```bash
-python -c "import fitz; fitz.open('cv.pdf')[0].get_pixmap(dpi=220).save('preview.png')"
+python -c "import pymupdf; pymupdf.open('cv.pdf')[0].get_pixmap(dpi=220).save('preview.png')"
 ```
 
 ### Check PDF text and layout
@@ -76,13 +76,21 @@ python -m unittest discover -s tests -v
 
 On Linux/macOS, use `python scripts/check_cv.py cv.pdf`.
 
-The checker uses **both PyMuPDF and pdftotext**. It requires clean section headings,
-their expected reading order, and the correct contact details, skills, employer,
-role progression, project dates, education and availability in the relevant
-sections. It also checks visible contact URLs, clickable links, one portrait A4
-page, the 2.5 MB size budget, and underlying text size and page bounds. A 1pt hidden
-name no longer satisfies the checks. Tests exercise missing, misplaced, noisy,
-letter-spaced and off-page content, as well as pagination regressions.
+The checker uses **PyMuPDF and pdftotext's `-raw` content-stream mode**. It requires
+clean section headings, their expected content-stream order, and the correct
+contact details, skills, employer, role progression, project dates, education and
+availability in the relevant sections. It also checks visible contact URLs,
+clickable links, one portrait A4 page, the 2.5 MB size budget, and underlying text
+size and page bounds. A 1pt hidden name no longer satisfies the checks. Tests
+exercise missing, misplaced, noisy, letter-spaced and off-page content, as well as
+pagination regressions.
+
+The default, layout-based `pdftotext` mode is also run. Lost, added or altered
+words/punctuation fail the check; reordering that disrupts section boundaries is
+reported as a **warning**, not hidden behind a successful content-stream check.
+In Poppler 24.02, this PDF retains all text but interleaves the two columns.
+That warning is expected while retaining this design; passing CI does not mean
+that a layout-based parser associates every field with the correct section.
 
 These are local regression checks, **not an ATS certification or ranking**.
 Different systems may still interleave the columns or ignore `/ActualText`.

@@ -1,13 +1,14 @@
 """Check this CV's extracted content and geometry, not an ATS ranking."""
 
 import argparse
+from collections import Counter
 from pathlib import Path
 import re
 import subprocess
 import sys
 import unicodedata
 
-import fitz
+import pymupdf
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -113,7 +114,20 @@ def check_text(text: str) -> list[str]:
     return errors
 
 
-def check_layout(document: fitz.Document) -> list[str]:
+def check_spatial_text(content_text: str, spatial_text: str) -> list[str]:
+    def tokens(text: str) -> Counter:
+        return Counter(re.findall(r"\w+|[^\w\s]", normalize(text)))
+
+    content_tokens = tokens(content_text)
+    spatial_tokens = tokens(spatial_text)
+    missing = content_tokens - spatial_tokens
+    extra = spatial_tokens - content_tokens
+    if missing or extra:
+        return [f"Layout-based extraction changes text; missing: {dict(missing)}, extra: {dict(extra)}"]
+    return []
+
+
+def check_layout(document: pymupdf.Document) -> list[str]:
     errors = []
     if len(document) != 1:
         errors.append(f"Expected one page, found {len(document)}")
@@ -122,8 +136,8 @@ def check_layout(document: fitz.Document) -> list[str]:
         if abs(page.rect.width - 595.28) > 1 or abs(page.rect.height - 841.89) > 1:
             errors.append(f"Page {page.number + 1} is not portrait A4")
         # Inspect the underlying glyphs too, so ActualText cannot hide a tiny text layer.
-        flags = fitz.TEXTFLAGS_DICT | fitz.TEXT_IGNORE_ACTUALTEXT
-        blocks = page.get_text("dict", flags=flags, clip=fitz.INFINITE_RECT())["blocks"]
+        flags = pymupdf.TEXTFLAGS_DICT | pymupdf.TEXT_IGNORE_ACTUALTEXT
+        blocks = page.get_text("dict", flags=flags, clip=pymupdf.INFINITE_RECT())["blocks"]
         for block in blocks:
             for line in block.get("lines", []):
                 for span in line["spans"]:
@@ -131,7 +145,7 @@ def check_layout(document: fitz.Document) -> list[str]:
                         continue
                     if span["size"] < 6:
                         errors.append(f"Text below 6pt: {span['text']!r}")
-                    if not page.rect.contains(fitz.Rect(span["bbox"])):
+                    if not page.rect.contains(pymupdf.Rect(span["bbox"])):
                         errors.append(f"Text outside the page: {span['text']!r}")
         links.update(link["uri"] for link in page.get_links() if "uri" in link)
     for target in sorted(LINK_TARGETS - links):
@@ -147,14 +161,19 @@ def main() -> int:
         parser.error(f"PDF does not exist: {args.pdf}")
 
     errors = []
+    warnings = []
     if args.pdf.stat().st_size > 2_500_000:
         errors.append("PDF exceeds the 2.5 MB size budget")
-    with fitz.open(args.pdf) as document:
+    with pymupdf.open(args.pdf) as document:
         errors.extend(check_layout(document))
         text = "\n".join(page.get_text() for page in document)
         errors.extend(f"PyMuPDF: {error}" for error in check_text(text))
     try:
-        result = subprocess.run(
+        content = subprocess.run(
+            ["pdftotext", "-raw", "-enc", "UTF-8", str(args.pdf.resolve()), "-"],
+            check=True, capture_output=True, encoding="utf-8",
+        )
+        spatial = subprocess.run(
             ["pdftotext", "-enc", "UTF-8", str(args.pdf.resolve()), "-"],
             check=True, capture_output=True, encoding="utf-8",
         )
@@ -163,13 +182,27 @@ def main() -> int:
     except subprocess.CalledProcessError as error:
         errors.append(f"pdftotext failed ({error.returncode}): {error.stderr.strip()}")
     else:
-        if result.stderr.strip():
-            errors.append(f"pdftotext diagnostic: {result.stderr.strip()}")
-        errors.extend(f"pdftotext: {error}" for error in check_text(result.stdout))
+        for label, result in (("content order", content), ("layout order", spatial)):
+            if result.stderr.strip():
+                errors.append(f"pdftotext ({label}) diagnostic: {result.stderr.strip()}")
+        errors.extend(f"pdftotext (content order): {error}" for error in check_text(content.stdout))
+        errors.extend(check_spatial_text(content.stdout, spatial.stdout))
+        layout_errors = check_text(spatial.stdout)
+        if layout_errors:
+            warnings.append(
+                "Layout-based pdftotext does not preserve section boundaries: "
+                + "; ".join(layout_errors)
+                + ". The retained two-column layout remains a compatibility risk."
+            )
+    for warning in warnings:
+        print(f"WARNING: {warning}", file=sys.stderr)
     if errors:
         print("CV checks failed:\n- " + "\n- ".join(errors), file=sys.stderr)
         return 1
-    print("CV checks passed: one A4 page, expected fields in both extractors, links and text bounds.")
+    print(
+        "CV content checks passed: one A4 page, expected fields in both content-order "
+        "extractors, no layout-based text loss, links and text bounds."
+    )
     return 0
 
 
