@@ -1,5 +1,5 @@
 %% Adrián Koller — CV (creative sidebar / timeline, v2)
-%% Compile with: pdflatex cv.tex   (works on Overleaf)
+%% Compile with: tectonic -X compile cv.tex
 \documentclass[10pt,a4paper]{article}
 
 \usepackage[a4paper,margin=0pt]{geometry}
@@ -9,20 +9,27 @@
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{microtype}
+\usepackage{soul}
 \usepackage{xcolor}
 \usepackage{tikz}
 \usetikzlibrary{calc,tikzmark,shapes.misc}
 \usepackage{fontawesome5}
 \usepackage{enumitem}
 \usepackage{hyperref}
+\usepackage{accsupp}
 \usepackage{parskip}
 \frenchspacing
+\urlstyle{same}
+
+% Tracking keeps words intact in the source and preserves the existing typeface.
+\sodef\nametracking{}{.25em}{.65em}{0em}
+\sodef\taglinetracking{}{.278em}{.81em}{0em}
 
 %---------- Palette ----------
 \definecolor{ink}     {HTML}{0F2350}   % midnight blue (accent)
 \definecolor{deepink} {HTML}{08153A}   % deeper variant for header
 \definecolor{body}    {HTML}{2A2A2A}
-\definecolor{mute}    {HTML}{8A8A8A}
+\definecolor{mute}    {HTML}{666666}
 \definecolor{rule}    {HTML}{D9D9D9}
 \definecolor{sidebg}  {HTML}{F4F2EC}   % warm off-white sidebar
 \definecolor{dotfill} {HTML}{C8C5BE}   % muted dots
@@ -32,11 +39,22 @@
   pdftitle={Adrián Koller — Software Developer CV},
   pdfauthor={Adrián Koller},
   pdfsubject={Curriculum Vitae},
+  pdflang={en-IE},
   pdfkeywords={Software Developer, Mobile, Full-Stack, Flutter, NestJS, Rust, C\#, Ireland}}
 
-% Prevent ugly hyphenation breaks on common words
-\hyphenation{Ireland Windows GitHub CircleCI KeepYourHabits
-  integrate integrating integration shipping codebase performance scanning}
+% Keep words intact when the PDF is converted to plain text.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\emergencystretch=1em
+
+% A space also suppresses decorative glyphs in readers that ignore empty ActualText.
+% The name and specialisms appear as ordinary visible text in Contact and Profile.
+\newcommand{\decorativetext}[1]{%
+  \BeginAccSupp{method=escape,ActualText={\space}}%
+  #1%
+  \EndAccSupp{}}
+
+\newcommand{\decorativeicon}[1]{\decorativetext{\faIcon{#1}}}
 
 %---------- Geometry ----------
 \newlength{\sidewidth}\setlength{\sidewidth}{6.0cm}
@@ -52,11 +70,12 @@
 %---------- Sidebar headers / lines / dots / lang pills ----------
 \newcommand{\sidehead}[2]{%
   \vspace{9pt}%
-  {\color{ink}\small\bfseries\faIcon{#1}\hspace{6pt}\MakeUppercase{#2}}\par
+  {\color{ink}\small\bfseries\decorativeicon{#1}\hspace{6pt}\MakeUppercase{#2}}\par
   \vspace{1pt}{\color{ink}\rule{18pt}{1.2pt}}\par\vspace{4pt}}
 
 \newcommand{\sideline}[2]{%
-  \noindent\makebox[14pt][l]{\color{ink}\footnotesize\faIcon{#1}}%
+  \noindent\hangindent=14pt\hangafter=1%
+  \makebox[14pt][l]{\color{ink}\footnotesize\decorativeicon{#1}}%
   {\footnotesize #2}\par\vspace{2pt}}
 
 \newcommand{\skilldots}[2]{%
@@ -83,7 +102,7 @@
 %---------- Main section header (icon + label + flowing rule) ----------
 \newcommand{\mainhead}[2]{%
   \vspace{8pt}\noindent
-  {\color{ink}\normalsize\bfseries\faIcon{#1}\hspace{6pt}\MakeUppercase{#2}}%
+  {\color{ink}\normalsize\bfseries\decorativeicon{#1}\hspace{6pt}\MakeUppercase{#2}}%
   \hspace{8pt}{\color{ink}\leaders\hrule height 0.6pt\hfill\kern0pt}\par\vspace{4pt}}
 
 %---------- Timeline (rail + markers, per-section) ----------
@@ -138,14 +157,6 @@
 \pagestyle{empty}
 
 % ========== FULL-WIDTH DARK HEADER + SIDEBAR BACKGROUND ==========
-% ATS-readable plain name (renders in dark color over dark band — invisible to humans
-% but extractable as "Adrián Koller" + "Software Developer" by parsers)
-\begin{tikzpicture}[remember picture, overlay]
-  \node[anchor=north west, text=deepink, inner sep=0pt, font=\sffamily\fontsize{1}{1}\selectfont]
-    at ([xshift=0.1cm, yshift=-0.1cm]current page.north west)
-    {Adrián Koller \textendash{} Software Developer \textendash{} Mobile, Full-Stack, Low-Level Systems};
-\end{tikzpicture}
-
 \begin{tikzpicture}[remember picture, overlay]
   % Sidebar warm background full height
   \fill[sidebg] (current page.north west)
@@ -164,11 +175,11 @@
   \node[anchor=west, text=white, inner sep=0pt]
     at ([xshift=0.7cm, yshift=-1.0cm]current page.north west)
     {\sffamily\fontsize{20}{22}\selectfont\bfseries
-     A\kern5pt D\kern5pt R\kern5pt I\kern5pt \'A\kern5pt N};
+     \decorativetext{\nametracking{ADRI\'AN}}};
   \node[anchor=west, text=white, inner sep=0pt]
     at ([xshift=0.7cm, yshift=-1.7cm]current page.north west)
     {\sffamily\fontsize{20}{22}\selectfont\bfseries
-     K\kern5pt O\kern5pt L\kern5pt L\kern5pt E\kern5pt R};
+     \decorativetext{\nametracking{KOLLER}}};
   % Decoration: short rule + dot beneath the name
   \draw[white, line width=1.2pt, opacity=0.75]
     ([xshift=0.7cm, yshift=-2.2cm]current page.north west) --
@@ -185,9 +196,10 @@
   \node[anchor=east, text=white, opacity=0.7, inner sep=0pt]
     at ([xshift=-0.7cm, yshift=-1.8cm]current page.north east)
     {\sffamily\fontsize{7.5}{9}\selectfont\bfseries
-     M O B I L E\hspace{6pt}\textperiodcentered\hspace{6pt}%
-     F U L L - S T A C K\hspace{6pt}\textperiodcentered\hspace{6pt}%
-     L O W - L E V E L\hspace{4pt} S Y S T E M S};
+     \decorativetext{%
+       \mbox{\taglinetracking{MOBILE}}\hspace{6pt}\textperiodcentered\hspace{6pt}%
+       \mbox{\taglinetracking{FULL-STACK}}\hspace{6pt}\textperiodcentered\hspace{6pt}%
+       \mbox{\taglinetracking{LOW-LEVEL SYSTEMS}}}};
   % Decoration line + dot (aligned with left at -2.15cm)
   \draw[white, line width=1.2pt, opacity=0.75]
     ([xshift=-3.0cm, yshift=-2.2cm]current page.north east) --
@@ -199,18 +211,19 @@
 
 % ========== SIDEBAR CONTENT ==========
 \noindent\begin{minipage}[t]{\sidewidth}
-  \vspace{2.2cm}% clear the full-width dark header band
+  \vspace{\dimexpr2.2cm+18pt\relax}% preserve clearance without the hidden-text paragraph
   \hspace{\sidepad}\begin{minipage}[t]{\dimexpr\sidewidth-2\sidepad\relax}
     \color{body}
-    \raggedright\hyphenpenalty=10000\exhyphenpenalty=10000
+    \raggedright
 
     %---- Contact
     \sidehead{address-card}{Contact}
+    \sideline{user}{\textbf{Adrián Koller}}
     \sideline{map-marker-alt}{Dublin, Ireland}
     \sideline{envelope}{\href{mailto:akoller@tcd.ie}{akoller@tcd.ie}}
     \sideline{phone}{+36 30 907 3040}
     \sideline{linkedin}{\href{https://www.linkedin.com/in/adrián-koller-aba007319/}{adrián-koller}}
-    \sideline{github}{\href{https://github.com/kolleradrian2005}{kolleradrian2005}}
+    \sideline{github}{\href{https://github.com/kolleradrian2005}{\nolinkurl{github.com/kolleradrian2005}}}
 
     %---- Eligibility
     \sidehead{passport}{Eligibility}
@@ -218,16 +231,16 @@
     Eligible to work in Ireland; \textbf{\color{ink}no sponsorship required}.}\par
 
     %---- Top skills (proficiency)
-    \sidehead{code}{Top Skills}
+    \sidehead{code}{Technical Skills}
     \skilldots{Flutter / Dart}{5}
     \skilldots{NestJS / Node.js}{4}
     \skilldots{Rust}{4}
     \skilldots{C\# / .NET}{4}
     \skilldots{Python}{4}
-    \skilldots{TypeScript / JS}{3}
+    \skilldots{TypeScript / JavaScript}{3}
 
     %---- Tooling
-    \sidehead{plus-circle}{Also Skilled In}
+    \sidehead{plus-circle}{Tools \& Platforms}
     {\setlength{\lineskip}{4pt}\setlength{\baselineskip}{12pt}%
     \chip{MCP servers}\chip{Unity}\chip{AWS}\\
     \chip{GitLab CI}\chip{Docker}\chip{Java}\\
@@ -247,45 +260,43 @@
 
     %---- Availability
     \sidehead{calendar-check}{Availability}
-    {\footnotesize Based in \textbf{\color{ink}Dublin, Ireland}.
-    Available for \textbf{\color{ink}full-time roles from September 2027},
-    on completion of my TCD MSc.}\par
+    {\footnotesize Available for \textbf{\color{ink}full-time roles from September 2027},
+    after completing my MSc at Trinity College Dublin.}\par
 
   \end{minipage}
 \end{minipage}%
 \hspace{0pt}%
 \begin{minipage}[t]{\dimexpr\paperwidth-\sidewidth\relax}
-  \vspace{2.2cm}% clear the full-width dark header band
+  \vspace{\dimexpr2.2cm+18pt\relax}
   \hspace{\mainpad}\begin{minipage}[t]{\dimexpr\paperwidth-\sidewidth-2\mainpad\relax}
     \color{body}
     \linespread{1.05}\selectfont
 
-    %---- Profile (no duplicated name; sidebar already shows it)
+    %---- Profile
     \mainhead{user}{Profile}
-    {\small Computer Science MSc student at Trinity College Dublin and working
-    software developer across
-    \textbf{mobile, full-stack, and low-level} engineering. Have built and
-    deployed Flutter/NestJS apps, co-founded two early-stage startups, and now develop on a
-    C\#/.NET enterprise codebase, using \textbf{agentic AI tooling} day-to-day.
-    Seeking a
-    \textbf{software engineering role in Ireland} where I can own features
-    end-to-end and grow in a strong engineering culture.}\par
+    {\small Software developer and \textbf{MSc Computer Science} student at
+    Trinity College Dublin (expected \textbf{September 2027}), focused on
+    \textbf{mobile, full-stack, and low-level systems}.
+    Experience with \textbf{C\#/.NET} enterprise software, automated testing,
+    \textbf{Flutter/NestJS} applications, and \textbf{Rust}.}\par
 
     %---- Experience
-    \mainhead{briefcase}{Experience}
+    \mainhead{briefcase}{Work Experience}
     \begin{timeline}{exp}
-    \tlentry{May 2025 \textendash{} Present}
+    \tlentry{One Identity Hungary \textperiodcentered{} May 2025 \textendash{} Present}
       {Software Developer}
-      {\textit{Started as Software Tester} \textendash{} One Identity Hungary \textendash{} Budapest, Hungary}
-      {\small\begin{itemize}
-        \item Leverage \textbf{agentic AI tooling} in daily development
-          \textendash{} set up \textbf{MCP}s and configure GitHub Copilot
-          context and skills so the agent works directly against the local
-          \textbf{C\#/.NET} codebase \textendash{} to speed up routine work
-          on Active Directory and Entra ID products.
-        \item R\&D escalation point for customer support; previously built
-          automated test suites for Windows apps and ran manual QA across web,
-          console, and SSO (RSTS) components.
+      {}
+      {{\footnotesize\color{mute}Budapest, Hungary \textperiodcentered{}
+        \textit{Started as Software Tester}}\par
+       \small\begin{itemize}
+        \item Develop on a \textbf{C\#/.NET} enterprise codebase for
+          \textbf{Active Directory and Microsoft Entra ID} products;
+          serve as an R\&D escalation point for customer support.
+        \item Built \textbf{automated test suites} for Windows applications
+          and performed \textbf{quality assurance (QA)} across web, console,
+          and single sign-on (SSO/RSTS) components.
+        \item Configure GitHub Copilot context, skills, and
+          \textbf{Model Context Protocol (MCP) servers}.
       \end{itemize}}
     \end{timeline}
 
@@ -293,11 +304,12 @@
     \mainhead{rocket}{Selected Projects}
     \begin{timeline}{prj}
     \tlentry{Aug 2023 \textendash{} Present}
-      {\href{https://github.com/kolleradrian2005/Lumina}{Lumina\hspace{4pt}{\footnotesize\faGithub}}}
+      {\href{https://github.com/kolleradrian2005/Lumina}{Lumina\hspace{4pt}{\footnotesize\decorativeicon{github}}}}
       {Thesis \textendash{} 2D game engine in \textbf{Rust} \& \textbf{OpenGL}}
       {\small\begin{itemize}
-        \item Designed a clean engine/game architecture with a custom
-          \textbf{ECS} and a \textbf{multithreaded logic/render split};
+        \item Designed the engine/game architecture with a custom
+          \textbf{entity-component system (ECS)} and a
+          \textbf{multithreaded logic/render split};
           cross-compiles to desktop and Android.
         \item Wrote a custom \textbf{OpenGL / GLSL 450} renderer with
           tessellation shaders, 16$\times$ MSAA, and a full-screen
@@ -309,10 +321,11 @@
       {Co-founder \textendash{} habit-tracking mobile app \textendash{}
        \textbf{Flutter, NestJS, AWS, Docker, CI/CD}}
       {\small\begin{itemize}
-        \item Co-architected the system: Flutter client, NestJS
-          backend services, and cloud deployment.
-        \item Containerised services with Docker and automated CI/CD workflows
-          for repeatable deployment; narrowed the MVP around core habit-tracking flows.
+        \item Co-architected a Flutter client and NestJS backend on
+          \textbf{Amazon Web Services (AWS)}.
+        \item Containerised services with Docker and automated
+          \textbf{continuous integration and delivery (CI/CD)};
+          focused the MVP on core habit-tracking flows.
       \end{itemize}}
 
     \tlentry{Apr 2024 \textendash{} Nov 2024}
