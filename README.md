@@ -1,7 +1,9 @@
 # CV — Adrián Koller
 
-A single-page, ATS-friendly creative CV built in LaTeX/TikZ. Designed for software
-engineering applications in Ireland (mobile, full-stack, low-level systems).
+A single-page creative CV built in LaTeX/TikZ, with text-extraction safeguards.
+Designed for software engineering applications in Ireland (mobile, full-stack,
+low-level systems). The two-column layout is retained deliberately; compatibility
+with every applicant tracking system is not guaranteed.
 
 The latest compiled output is committed as [`cv.pdf`](cv.pdf).
 
@@ -12,24 +14,32 @@ The latest compiled output is committed as [`cv.pdf`](cv.pdf).
   tracked-caps tagline.
 - **Beaded timeline rails** connect entries in Experience, Selected Projects, and
   Education.
-- **Soft pill chips** for the “Also Familiar With” block; filled pills for
-  Languages; dot-rated scale for Top Skills.
-- **ATS-readable** — `pdftitle`/`pdfauthor`/`pdfsubject`/`pdfkeywords` metadata
-  is set in `\hypersetup`, and an invisible (1pt, deepink-on-deepink) plain-text
-  name + role string is rendered at the top-left of the page so parsers extract
-  `Adrián Koller — Software Developer — …` cleanly.
-- `\frenchspacing` + a curated `\hyphenation{...}` exception list eliminate
-  awkward double-spaces and ugly word breaks.
+- **Soft pill chips** for Tools & Platforms; filled pills for Languages;
+  the existing skill dots are retained for visual continuity, not as an ATS score.
+- **Visible, readable identity** — the normal-spaced name is printed in Contact,
+  and the header specialisms appear in Profile. There is no invisible name or
+  keyword layer. Contact URLs are both visible and clickable.
+- **Decorative text** — `accsupp` maps the repeated, letter-spaced header lettering
+  and icons to a space via PDF `/ActualText`. A space also works with older readers
+  that ignore an empty replacement. All meaningful information remains visible as
+  ordinary text elsewhere; extraction does not depend on decoding the header.
+- **Document metadata** includes the title, author, subject and `en-IE` language.
+  Metadata is descriptive, not a substitute for readable page content.
+- `\frenchspacing` and disabled word hyphenation keep text spacing and extracted
+  words predictable.
 
 ## Requirements
 
-- A LaTeX engine that supports `xelatex` / `lualatex` features used here.
-  [Tectonic](https://tectonic-typesetting.github.io/) is recommended — it
-  resolves and downloads packages automatically on first run.
+- [Tectonic](https://tectonic-typesetting.github.io/) 0.15.0 (the CI version) is
+  recommended. It resolves and downloads LaTeX packages, including `accsupp`,
+  automatically on first run. XeLaTeX and LuaLaTeX are alternatives.
 
-Optional, only for previewing PNG renders during development:
+For extraction checks and optional PNG previews:
 
-- Python 3 with [`PyMuPDF`](https://pymupdf.readthedocs.io/) (`pip install pymupdf`)
+- Python 3 with a current [`PyMuPDF`](https://pymupdf.readthedocs.io/)
+  (`python -m pip install pymupdf`), including `TEXT_IGNORE_ACTUALTEXT`.
+- `pdftotext` from Poppler or Xpdf, available on `PATH`. CI installs Poppler's
+  `poppler-utils`; MiKTeX's Xpdf tool can also be used locally.
 
 ## Usage
 
@@ -57,20 +67,35 @@ You may need to run twice so cross-references settle.
 python -c "import fitz; fitz.open('cv.pdf')[0].get_pixmap(dpi=220).save('preview.png')"
 ```
 
-### Quick ATS-extraction sanity check
+### Check PDF text and layout
 
-```bash
-python -c "import fitz; print(fitz.open('cv.pdf')[0].get_text())"
+```powershell
+python .\scripts\check_cv.py .\cv.pdf
+python -m unittest discover -s tests -v
 ```
 
-The first non-empty line should be
-`Adrián Koller – Software Developer – Mobile, Full-Stack, Low-Level Systems`.
+On Linux/macOS, use `python scripts/check_cv.py cv.pdf`.
+
+The checker uses **both PyMuPDF and pdftotext**. It requires clean section headings,
+their expected reading order, and the correct contact details, skills, employer,
+role progression, project dates, education and availability in the relevant
+sections. It also checks visible contact URLs, clickable links, one portrait A4
+page, the 2.5 MB size budget, and underlying text size and page bounds. A 1pt hidden
+name no longer satisfies the checks. Tests exercise missing, misplaced, noisy,
+letter-spaced and off-page content, as well as pagination regressions.
+
+These are local regression checks, **not an ATS certification or ranking**.
+Different systems may still interleave the columns or ignore `/ActualText`.
+Review the employer's auto-filled profile before submitting an application.
+The PDF is not claimed to be a fully tagged or PDF/UA-conformant document.
 
 ## Project layout
 
 ```
 cv.tex          # LaTeX source (palette, macros, content)
 cv.pdf          # Latest compiled output (committed for convenience)
+scripts/check_cv.py
+tests/test_check_cv.py
 README.md       # This file
 .gitignore
 ```
@@ -78,13 +103,19 @@ README.md       # This file
 ## Editing tips
 
 - **Palette** is defined near the top of `cv.tex` (`ink`, `deepink`, `body`,
-  `mute`, `paper`).
+  `mute`, `sidebg`).
 - **Macros** for sidebar items, language pills, chips, timeline markers, and
   section headers live just below the palette — modify there to retheme.
 - The chip block uses explicit `\\` line breaks to enforce a 3-3-3 layout.
   Reorder `\chip{...}` calls to rebalance row widths if you change the entries.
-- If a word hyphenates badly after edits, add it (without explicit hyphens) to
-  the `\hyphenation{...}` list at the top of `cv.tex`.
+- Keep icons inside `\decorativeicon{...}` and preserve the normal-spaced Contact
+  name when changing the decorative header.
+- Keep employer, current role and previous role on separate lines. The displayed
+  One Identity dates cover total employment; do not invent a promotion date.
+- When intentionally changing facts, dates or section names, update `EXPECTED`,
+  `CONTACT_URLS` and `LINK_TARGETS` in `scripts/check_cv.py` as applicable.
+- Rebuild `cv.pdf`, run the checks, and review a PNG at normal reading size before
+  committing. Text extraction alone does not establish visual quality.
 
 ## Continuous build & deploy
 
@@ -92,7 +123,7 @@ Every push to `main` and every PR triggers
 [`.github/workflows/build.yml`](.github/workflows/build.yml), which:
 
 1. Installs Tectonic and compiles `cv.tex`.
-2. Runs an ATS-extraction sanity check (asserts the name is extractable).
+2. Runs the extraction-checker tests and checks the PDF with PyMuPDF and Poppler.
 3. Uploads the resulting `cv.pdf` as a workflow artifact (`cv-pdf`).
 4. On pushes to `main`, deploys the PDF to **GitHub Pages**, available at
    `https://<your-user>.github.io/<repo>/cv.pdf` (with a redirect from the

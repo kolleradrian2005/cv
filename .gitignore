@@ -18,6 +18,9 @@ cv_hi.png
 *.fdb_latexmk
 *.synctex.gz
 
+# Python check artifacts
+__pycache__/
+
 # OS / editor cruft
 .DS_Store
 Thumbs.db
