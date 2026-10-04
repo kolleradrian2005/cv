@@ -19,8 +19,8 @@ The latest compiled output is committed as [`cv.pdf`](cv.pdf).
   the existing skill dots are retained for visual continuity, not as an ATS score.
 - **Visible, readable identity** — the normal-spaced name is printed in Contact,
   and the header specialisms appear in Profile. There is no invisible name or
-  keyword layer. The GitHub URL is printed in full; a single-line "LinkedIn
-  profile" label keeps the original, complete LinkedIn destination clickable.
+  keyword layer. The GitHub URL is printed in full; the original single-line
+  "adrián-koller" label keeps the complete LinkedIn destination clickable.
   The full LinkedIn URL is not included in plain-text-only extraction.
 - **Decorative text** — `accsupp` maps the repeated, letter-spaced header lettering
   and icons to a space via PDF `/ActualText`. A space also works with older readers
