@@ -9,6 +9,7 @@
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{microtype}
+\usepackage{soul}
 \usepackage{xcolor}
 \usepackage{tikz}
 \usetikzlibrary{calc,tikzmark,shapes.misc}
@@ -19,6 +20,10 @@
 \usepackage{parskip}
 \frenchspacing
 \urlstyle{same}
+
+% Tracking keeps words intact in the source and preserves the existing typeface.
+\sodef\nametracking{}{.25em}{.65em}{0em}
+\sodef\taglinetracking{}{.278em}{.81em}{0em}
 
 %---------- Palette ----------
 \definecolor{ink}     {HTML}{0F2350}   % midnight blue (accent)
@@ -170,11 +175,11 @@
   \node[anchor=west, text=white, inner sep=0pt]
     at ([xshift=0.7cm, yshift=-1.0cm]current page.north west)
     {\sffamily\fontsize{20}{22}\selectfont\bfseries
-     \decorativetext{A\kern5pt D\kern5pt R\kern5pt I\kern5pt \'A\kern5pt N}};
+     \decorativetext{\nametracking{ADRI\'AN}}};
   \node[anchor=west, text=white, inner sep=0pt]
     at ([xshift=0.7cm, yshift=-1.7cm]current page.north west)
     {\sffamily\fontsize{20}{22}\selectfont\bfseries
-     \decorativetext{K\kern5pt O\kern5pt L\kern5pt L\kern5pt E\kern5pt R}};
+     \decorativetext{\nametracking{KOLLER}}};
   % Decoration: short rule + dot beneath the name
   \draw[white, line width=1.2pt, opacity=0.75]
     ([xshift=0.7cm, yshift=-2.2cm]current page.north west) --
@@ -192,9 +197,9 @@
     at ([xshift=-0.7cm, yshift=-1.8cm]current page.north east)
     {\sffamily\fontsize{7.5}{9}\selectfont\bfseries
      \decorativetext{%
-       M O B I L E\hspace{6pt}\textperiodcentered\hspace{6pt}%
-       F U L L - S T A C K\hspace{6pt}\textperiodcentered\hspace{6pt}%
-       L O W - L E V E L\hspace{4pt} S Y S T E M S}};
+       \mbox{\taglinetracking{MOBILE}}\hspace{6pt}\textperiodcentered\hspace{6pt}%
+       \mbox{\taglinetracking{FULL-STACK}}\hspace{6pt}\textperiodcentered\hspace{6pt}%
+       \mbox{\taglinetracking{LOW-LEVEL SYSTEMS}}}};
   % Decoration line + dot (aligned with left at -2.15cm)
   \draw[white, line width=1.2pt, opacity=0.75]
     ([xshift=-3.0cm, yshift=-2.2cm]current page.north east) --
@@ -217,7 +222,7 @@
     \sideline{map-marker-alt}{Dublin, Ireland}
     \sideline{envelope}{\href{mailto:akoller@tcd.ie}{akoller@tcd.ie}}
     \sideline{phone}{+36 30 907 3040}
-    \sideline{linkedin}{\href{https://www.linkedin.com/in/adrián-koller-aba007319/}{\nolinkurl{linkedin.com/in/adrián-koller-aba007319}}}
+    \sideline{linkedin}{\href{https://www.linkedin.com/in/adrián-koller-aba007319/}{LinkedIn profile}}
     \sideline{github}{\href{https://github.com/kolleradrian2005}{\nolinkurl{github.com/kolleradrian2005}}}
 
     %---- Eligibility
@@ -278,11 +283,11 @@
     %---- Experience
     \mainhead{briefcase}{Work Experience}
     \begin{timeline}{exp}
-    \tlentry{May 2025 \textendash{} Present}
-      {One Identity Hungary}
-      {Budapest, Hungary}
-      {{\small\bfseries\color{ink}Software Developer}\\[-2pt]
-       {\footnotesize\color{mute}\textit{Previously: Software Tester}}\par
+    \tlentry{One Identity Hungary \textperiodcentered{} May 2025 \textendash{} Present}
+      {Software Developer}
+      {}
+      {{\footnotesize\color{mute}Budapest, Hungary \textperiodcentered{}
+        \textit{Started as Software Tester}}\par
        \small\begin{itemize}
         \item Develop on a \textbf{C\#/.NET} enterprise codebase for
           \textbf{Active Directory and Microsoft Entra ID} products;

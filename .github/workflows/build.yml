@@ -32,10 +32,8 @@ jobs:
       - name: Compile cv.tex
         run: tectonic -X compile cv.tex --keep-logs
 
-      - name: Check PDF text and layout
+      - name: Check PDF mechanics
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq poppler-utils
           python3 -m pip install --quiet pymupdf
           python3 -m unittest discover -s tests -v
           python3 scripts/check_cv.py cv.pdf
