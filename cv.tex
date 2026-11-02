@@ -118,8 +118,9 @@
 
 % Timeline entry — places a marker, then content.
 \newcommand{\tlentry}[4]{%
-  \par\vspace{4pt}%
+  \par\vspace{3pt}%
   \noindent\begin{minipage}[t]{\linewidth}
+  \raggedright
   \tlmarker
   {\footnotesize\color{mute}#1}\hfill\strut\\[-2pt]
   {\bfseries\color{ink}#2}\ifx&#3&\else\hspace{4pt}{\footnotesize\color{mute}#3}\fi\par\vspace{2pt}
@@ -129,6 +130,7 @@
 \newcommand{\eduentry}[4]{%
   \par\vspace{3pt}%
   \noindent\begin{minipage}[t]{\linewidth}
+  \raggedright
   \tlmarker
   {\footnotesize\color{mute}#1}\hfill\strut\\[-2pt]
   {\bfseries\color{ink}#2}\par
@@ -272,6 +274,7 @@
   \hspace{\mainpad}\begin{minipage}[t]{\dimexpr\paperwidth-\sidewidth-2\mainpad\relax}
     \color{body}
     \linespread{1.05}\selectfont
+    \raggedright
 
     %---- Profile
     \mainhead{user}{Profile}
@@ -292,15 +295,16 @@
         \item Developed \textbf{REST API} features and fixes for
           Active Roles (\textbf{Active Directory / Microsoft Entra ID}),
           with OpenAPI compatibility checks in CI.
-        \item Designed and integrated an \textbf{end-to-end code-coverage
-          framework across six test suites} for desktop, web, and
-          Windows service components.
+        \item Fixed sorted searches timing out after two minutes;
+          first results returned in \textbf{about 0.3 s} on a
+          \textbf{200,000-user test directory}.
+        \item Built an \textbf{end-to-end code-coverage framework across six
+          test suites} for desktop, web, and Windows service components.
         \item Served as an \textbf{R\&D escalation point for 20+ enterprise
           customer cases}; investigated root causes and provided fixes
           or workaround guidance to support.
-        \item Developed reusable \textbf{GitHub Copilot skills and MCP tooling}
-          for desktop UI testing, adopted in the product group's
-          shared agent setup.
+        \item Built \textbf{GitHub Copilot skills and MCP tooling} for desktop
+          UI testing, adopted in the product group's shared agent setup.
       \end{itemize}}
     \end{timeline}
 
@@ -338,8 +342,7 @@
         \item Implemented \textbf{Swift integrations} for NFC contact sharing,
           local profile storage, and Apple Wallet passes through
           Flutter platform channels.
-        \item Built contact APIs and deep links in NestJS;
-          automated Android/iOS deployment with \textbf{CircleCI}.
+        \item Built NestJS contact APIs/deep links and \textbf{CircleCI} mobile release pipelines.
       \end{itemize}}
 
     \tlentry{Feb 2025 \textendash{} May 2025}

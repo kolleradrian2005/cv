@@ -15,6 +15,8 @@ The latest compiled output is committed as [`cv.pdf`](cv.pdf).
   than spaces between individual letters.
 - **Beaded timeline rails** connect entries in Experience, Selected Projects, and
   Education.
+- **Left-aligned body text** keeps word spacing natural in the profile and
+  timeline entries rather than stretching short lines to full justification.
 - **Skill dots** retain the author's relative proficiency ratings for visual
   continuity, not as an ATS score. Soft pill chips list Tools & Platforms;
   filled pills show spoken-language levels.
