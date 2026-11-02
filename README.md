@@ -15,8 +15,8 @@ The latest compiled output is committed as [`cv.pdf`](cv.pdf).
   than spaces between individual letters.
 - **Beaded timeline rails** connect entries in Experience, Selected Projects, and
   Education.
-- **Unranked technical skills** grouped into languages and frameworks/runtimes,
-  without subjective proficiency scores. Soft pill chips list Tools & Platforms;
+- **Skill dots** retain the author's relative proficiency ratings for visual
+  continuity, not as an ATS score. Soft pill chips list Tools & Platforms;
   filled pills show spoken-language levels.
 - **Visible, readable identity** — the normal-spaced name is printed in Contact,
   and the header specialisms appear in Profile. There is no invisible name or

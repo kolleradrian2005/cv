@@ -32,6 +32,7 @@
 \definecolor{mute}    {HTML}{666666}
 \definecolor{rule}    {HTML}{D9D9D9}
 \definecolor{sidebg}  {HTML}{F4F2EC}   % warm off-white sidebar
+\definecolor{dotfill} {HTML}{C8C5BE}   % muted dots
 
 \color{body}
 \hypersetup{colorlinks=true, urlcolor=ink, linkcolor=ink,
@@ -77,9 +78,12 @@
   \makebox[14pt][l]{\color{ink}\footnotesize\decorativeicon{#1}}%
   {\footnotesize #2}\par\vspace{2pt}}
 
-\newcommand{\skillgroup}[2]{%
-  {\footnotesize\textbf{#1}\par
-   #2\par}\vspace{4pt}}
+\newcommand{\skilldots}[2]{%
+  \noindent{\footnotesize #1}\hfill%
+  \foreach \n in {1,...,5}{%
+    \ifnum\n>#2 \tikz[baseline=-0.5ex]\draw[fill=dotfill,draw=dotfill] (0,0) circle (1.6pt);%
+    \else \tikz[baseline=-0.5ex]\draw[fill=ink,draw=ink] (0,0) circle (1.6pt);%
+    \fi\hspace{1pt}}\par\vspace{2pt}}
 
 \newcommand{\langline}[3]{%
   \noindent{\footnotesize\bfseries #1}\hfill%
@@ -226,17 +230,19 @@
     {\footnotesize\textbf{\color{ink}EU citizen.}
     Eligible to work in Ireland; \textbf{\color{ink}no sponsorship required}.}\par
 
-    %---- Skills (unranked)
+    %---- Top skills (proficiency)
     \sidehead{code}{Technical Skills}
-    \skillgroup{Languages}
-      {Dart, Rust, C\#, Java, Python,\newline TypeScript / JavaScript}
-    \skillgroup{Frameworks \& Runtimes}
-      {Flutter, .NET, NestJS / Node.js}
+    \skilldots{Flutter / Dart}{5}
+    \skilldots{NestJS / Node.js}{4}
+    \skilldots{Rust}{4}
+    \skilldots{C\# / .NET}{4}
+    \skilldots{Python}{4}
+    \skilldots{TypeScript / JavaScript}{3}
 
     %---- Tooling
     \sidehead{plus-circle}{Tools \& Platforms}
     {\setlength{\lineskip}{4pt}\setlength{\baselineskip}{12pt}%
-    \chip{Git}\chip{Docker}\chip{AWS}\\
+    \chip{Git}\chip{Docker}\chip{AWS}\chip{Java}\\
     \chip{GitHub Actions}\chip{GitLab CI}\\
     \chip{CircleCI}\chip{Unity}\chip{OpenGL}\\
     \chip{GitHub Copilot}\chip{MCP servers}\par}
@@ -272,7 +278,7 @@
     {\small Software developer and \textbf{MSc Computer Science} student at
     Trinity College Dublin (expected \textbf{September 2027}).
     Experience in \textbf{mobile, full-stack, and low-level systems}:
-    C\#/.NET REST APIs, test automation, Flutter/NestJS apps, and Rust graphics.}\par
+    REST APIs, test automation, Flutter/NestJS apps, and Rust graphics.}\par
 
     %---- Experience
     \mainhead{briefcase}{Work Experience}
@@ -283,7 +289,7 @@
       {{\footnotesize\color{mute}Budapest, Hungary \textperiodcentered{}
         \textit{Started as Software Tester}}\par
        \small\begin{itemize}
-        \item Developed \textbf{C\#/.NET REST API v2} features and fixes for
+        \item Developed \textbf{REST API} features and fixes for
           Active Roles (\textbf{Active Directory / Microsoft Entra ID}),
           with OpenAPI compatibility checks in CI.
         \item Designed and integrated an \textbf{end-to-end code-coverage
@@ -301,6 +307,17 @@
     %---- Selected Projects
     \mainhead{rocket}{Selected Projects}
     \begin{timeline}{prj}
+    \tlentry{Aug 2023 \textendash{} Present}
+      {\href{https://github.com/kolleradrian2005/Lumina}{Lumina\hspace{4pt}{\footnotesize\decorativeicon{github}}}}
+      {Thesis \textendash{} 2D game engine in \textbf{Rust} \& \textbf{OpenGL}}
+      {\small\begin{itemize}
+        \item Built a custom \textbf{entity-component system (ECS)} with
+          typed queries and a \textbf{multithreaded logic/render split}
+          communicating through bounded channels.
+        \item Wrote a custom \textbf{OpenGL renderer} with tessellation shaders
+          and full-screen \textbf{post-processing}: god rays, vignette, and focal blur.
+      \end{itemize}}
+
     \tlentry{Jul 2025 \textendash{} Present}
       {KeepYourHabits}
       {Co-founder \textendash{} habit-tracking mobile app \textendash{}
@@ -311,17 +328,6 @@
           using agent-assisted development.
         \item Automated \textbf{Android/iOS releases} with GitHub Actions
           and Fastlane, and Docker-based backend deployment to \textbf{AWS}.
-      \end{itemize}}
-
-    \tlentry{Aug 2023 \textendash{} Present}
-      {\href{https://github.com/kolleradrian2005/Lumina}{Lumina\hspace{4pt}{\footnotesize\decorativeicon{github}}}}
-      {Thesis \textendash{} 2D game engine in \textbf{Rust} \& \textbf{OpenGL}}
-      {\small\begin{itemize}
-        \item Built a custom \textbf{entity-component system (ECS)} with
-          typed queries and separate logic/render threads communicating
-          through bounded channels.
-        \item Implemented \textbf{tessellation-based vegetation animation}
-          and full-screen post-processing: god rays, vignette, and focal blur.
       \end{itemize}}
 
     \tlentry{Apr 2024 \textendash{} Nov 2024}
@@ -361,7 +367,7 @@
     \eduentry{Sep 2025 \textendash{} Jan 2026}
       {Erasmus+ Exchange \textendash{} Informatics Engineering}
       {Universitat Politècnica de València (ETSINF), Spain}
-      {}
+      {Coursework: Network Information Security Technologies, Computer Architecture}
     \end{timeline}
 
   \end{minipage}
