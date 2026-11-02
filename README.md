@@ -15,8 +15,9 @@ The latest compiled output is committed as [`cv.pdf`](cv.pdf).
   than spaces between individual letters.
 - **Beaded timeline rails** connect entries in Experience, Selected Projects, and
   Education.
-- **Soft pill chips** for Tools & Platforms; filled pills for Languages;
-  the existing skill dots are retained for visual continuity, not as an ATS score.
+- **Unranked technical skills** grouped into languages and frameworks/runtimes,
+  without subjective proficiency scores. Soft pill chips list Tools & Platforms;
+  filled pills show spoken-language levels.
 - **Visible, readable identity** — the normal-spaced name is printed in Contact,
   and the header specialisms appear in Profile. There is no invisible name or
   keyword layer. The GitHub URL is printed in full; the original single-line
@@ -113,11 +114,11 @@ README.md       # This file
 - **Tracking** is set once for each header style in `\nametracking` and
   `\taglinetracking`. Edit their word arguments normally; do not insert spaces
   between letters.
-- The chip block uses explicit `\\` line breaks to enforce a 3-3-3 layout.
+- The chip block uses explicit `\\` line breaks to balance its rows.
   Reorder `\chip{...}` calls to rebalance row widths if you change the entries.
 - Keep icons inside `\decorativeicon{...}` and preserve the normal-spaced Contact
   name when changing the decorative header.
-- Keep the current role as the primary experience heading. Employer and employment
+- Keep the role as the primary experience heading. Employer and employment
   dates share a muted line; location and the starting role form a smaller caption.
   The One Identity dates cover total employment, not an invented promotion date.
 - Rebuild `cv.pdf`, run the checks, and review a PNG at normal reading size before

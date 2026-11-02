@@ -32,7 +32,6 @@
 \definecolor{mute}    {HTML}{666666}
 \definecolor{rule}    {HTML}{D9D9D9}
 \definecolor{sidebg}  {HTML}{F4F2EC}   % warm off-white sidebar
-\definecolor{dotfill} {HTML}{C8C5BE}   % muted dots
 
 \color{body}
 \hypersetup{colorlinks=true, urlcolor=ink, linkcolor=ink,
@@ -67,7 +66,7 @@
   label={\textcolor{ink}{\footnotesize\textbullet}},
   topsep=2pt, itemsep=2pt, parsep=0pt}
 
-%---------- Sidebar headers / lines / dots / lang pills ----------
+%---------- Sidebar headers / lines / skills / lang pills ----------
 \newcommand{\sidehead}[2]{%
   \vspace{9pt}%
   {\color{ink}\small\bfseries\decorativeicon{#1}\hspace{6pt}\MakeUppercase{#2}}\par
@@ -78,12 +77,9 @@
   \makebox[14pt][l]{\color{ink}\footnotesize\decorativeicon{#1}}%
   {\footnotesize #2}\par\vspace{2pt}}
 
-\newcommand{\skilldots}[2]{%
-  \noindent{\footnotesize #1}\hfill%
-  \foreach \n in {1,...,5}{%
-    \ifnum\n>#2 \tikz[baseline=-0.5ex]\draw[fill=dotfill,draw=dotfill] (0,0) circle (1.6pt);%
-    \else \tikz[baseline=-0.5ex]\draw[fill=ink,draw=ink] (0,0) circle (1.6pt);%
-    \fi\hspace{1pt}}\par\vspace{2pt}}
+\newcommand{\skillgroup}[2]{%
+  {\footnotesize\textbf{#1}\par
+   #2\par}\vspace{4pt}}
 
 \newcommand{\langline}[3]{%
   \noindent{\footnotesize\bfseries #1}\hfill%
@@ -230,21 +226,20 @@
     {\footnotesize\textbf{\color{ink}EU citizen.}
     Eligible to work in Ireland; \textbf{\color{ink}no sponsorship required}.}\par
 
-    %---- Top skills (proficiency)
+    %---- Skills (unranked)
     \sidehead{code}{Technical Skills}
-    \skilldots{Flutter / Dart}{5}
-    \skilldots{NestJS / Node.js}{4}
-    \skilldots{Rust}{4}
-    \skilldots{C\# / .NET}{4}
-    \skilldots{Python}{4}
-    \skilldots{TypeScript / JavaScript}{3}
+    \skillgroup{Languages}
+      {Dart, Rust, C\#, Java, Python,\newline TypeScript / JavaScript}
+    \skillgroup{Frameworks \& Runtimes}
+      {Flutter, .NET, NestJS / Node.js}
 
     %---- Tooling
     \sidehead{plus-circle}{Tools \& Platforms}
     {\setlength{\lineskip}{4pt}\setlength{\baselineskip}{12pt}%
-    \chip{MCP servers}\chip{Unity}\chip{AWS}\\
-    \chip{GitLab CI}\chip{Docker}\chip{Java}\\
-    \chip{CircleCI}\chip{OpenGL}\chip{Git}\par}
+    \chip{Git}\chip{Docker}\chip{AWS}\\
+    \chip{GitHub Actions}\chip{GitLab CI}\\
+    \chip{CircleCI}\chip{Unity}\chip{OpenGL}\\
+    \chip{GitHub Copilot}\chip{MCP servers}\par}
 
     %---- Languages
     \sidehead{language}{Languages}
@@ -275,80 +270,78 @@
     %---- Profile
     \mainhead{user}{Profile}
     {\small Software developer and \textbf{MSc Computer Science} student at
-    Trinity College Dublin (expected \textbf{September 2027}), focused on
-    \textbf{mobile, full-stack, and low-level systems}.
-    Experience with \textbf{C\#/.NET} enterprise software, automated testing,
-    \textbf{Flutter/NestJS} applications, and \textbf{Rust}.}\par
+    Trinity College Dublin (expected \textbf{September 2027}).
+    Experience in \textbf{mobile, full-stack, and low-level systems}:
+    C\#/.NET REST APIs, test automation, Flutter/NestJS apps, and Rust graphics.}\par
 
     %---- Experience
     \mainhead{briefcase}{Work Experience}
     \begin{timeline}{exp}
-    \tlentry{One Identity Hungary \textperiodcentered{} May 2025 \textendash{} Present}
+    \tlentry{One Identity Hungary \textperiodcentered{} May 2025 \textendash{} Oct 2026}
       {Software Developer}
       {}
       {{\footnotesize\color{mute}Budapest, Hungary \textperiodcentered{}
         \textit{Started as Software Tester}}\par
        \small\begin{itemize}
-        \item Develop on a \textbf{C\#/.NET} enterprise codebase for
-          \textbf{Active Directory and Microsoft Entra ID} products;
-          serve as an R\&D escalation point for customer support.
-        \item Built \textbf{automated test suites} for Windows applications
-          and performed \textbf{quality assurance (QA)} across web, console,
-          and single sign-on (SSO/RSTS) components.
-        \item Configure GitHub Copilot context, skills, and
-          \textbf{Model Context Protocol (MCP) servers}.
+        \item Developed \textbf{C\#/.NET REST API v2} features and fixes for
+          Active Roles (\textbf{Active Directory / Microsoft Entra ID}),
+          with OpenAPI compatibility checks in CI.
+        \item Designed and integrated an \textbf{end-to-end code-coverage
+          framework across six test suites} for desktop, web, and
+          Windows service components.
+        \item Served as an \textbf{R\&D escalation point for 20+ enterprise
+          customer cases}; investigated root causes and provided fixes
+          or workaround guidance to support.
+        \item Developed reusable \textbf{GitHub Copilot skills and MCP tooling}
+          for desktop UI testing, adopted in the product group's
+          shared agent setup.
       \end{itemize}}
     \end{timeline}
 
     %---- Selected Projects
     \mainhead{rocket}{Selected Projects}
     \begin{timeline}{prj}
+    \tlentry{Jul 2025 \textendash{} Present}
+      {KeepYourHabits}
+      {Co-founder \textendash{} habit-tracking mobile app \textendash{}
+       \textbf{Flutter, NestJS}}
+      {\small\begin{itemize}
+        \item Implemented onboarding, \textbf{shared habit groups}, ownership
+          transfer, and \textbf{member progress tracking} across the app and API
+          using agent-assisted development.
+        \item Automated \textbf{Android/iOS releases} with GitHub Actions
+          and Fastlane, and Docker-based backend deployment to \textbf{AWS}.
+      \end{itemize}}
+
     \tlentry{Aug 2023 \textendash{} Present}
       {\href{https://github.com/kolleradrian2005/Lumina}{Lumina\hspace{4pt}{\footnotesize\decorativeicon{github}}}}
       {Thesis \textendash{} 2D game engine in \textbf{Rust} \& \textbf{OpenGL}}
       {\small\begin{itemize}
-        \item Designed the engine/game architecture with a custom
-          \textbf{entity-component system (ECS)} and a
-          \textbf{multithreaded logic/render split};
-          cross-compiles to desktop and Android.
-        \item Wrote a custom \textbf{OpenGL / GLSL 450} renderer with
-          tessellation shaders, 16$\times$ MSAA, and a full-screen
-          \textbf{post-processing} pass (god rays, vignette, focal blur).
-      \end{itemize}}
-
-    \tlentry{Jul 2025 \textendash{} Present}
-      {KeepYourHabits}
-      {Co-founder \textendash{} habit-tracking mobile app \textendash{}
-       \textbf{Flutter, NestJS, AWS, Docker, CI/CD}}
-      {\small\begin{itemize}
-        \item Co-architected a Flutter client and NestJS backend on
-          \textbf{Amazon Web Services (AWS)}.
-        \item Containerised services with Docker and automated
-          \textbf{continuous integration and delivery (CI/CD)};
-          focused the MVP on core habit-tracking flows.
+        \item Built a custom \textbf{entity-component system (ECS)} with
+          typed queries and separate logic/render threads communicating
+          through bounded channels.
+        \item Implemented \textbf{tessellation-based vegetation animation}
+          and full-screen post-processing: god rays, vignette, and focal blur.
       \end{itemize}}
 
     \tlentry{Apr 2024 \textendash{} Nov 2024}
       {Touch}
       {Co-founder \textendash{} digital business-card app \textendash{}
-       \textbf{Flutter, NestJS, Swift, CircleCI, AWS}}
+       \textbf{Flutter, NestJS, Swift}}
       {\small\begin{itemize}
-        \item Built at a university innovation lab; implemented iOS-native
-          features in Swift: \textbf{NFC scanning, PKPass creation, and
-          Apple ID authentication}.
-        \item Automated App Store / Play Store deployment with CircleCI;
-          helped migrate the backend from Laravel (PHP) to NestJS (Node.js).
+        \item Implemented \textbf{Swift integrations} for NFC contact sharing,
+          local profile storage, and Apple Wallet passes through
+          Flutter platform channels.
+        \item Built contact APIs and deep links in NestJS;
+          automated Android/iOS deployment with \textbf{CircleCI}.
       \end{itemize}}
 
     \tlentry{Feb 2025 \textendash{} May 2025}
-      {Wild Trails}
-      {University team \textendash{} 3D tycoon park simulation in
+      {\href{https://github.com/kolleradrian2005/wild-trails}{Wild Trails\hspace{4pt}{\footnotesize\decorativeicon{github}}}}
+      {Three-person university team \textendash{} park simulation in
        \textbf{Unity, C\#}}
       {\small\begin{itemize}
-        \item Designed a procedural terrain system using noise algorithms;
-          implemented save/load for complex game state.
-        \item Built placement algorithms for road networks and lakes;
-          set up the GitLab CI pipeline.
+        \item Implemented terrain generation, road/lake placement, and save/load.
       \end{itemize}}
     \end{timeline}
 
@@ -368,7 +361,7 @@
     \eduentry{Sep 2025 \textendash{} Jan 2026}
       {Erasmus+ Exchange \textendash{} Informatics Engineering}
       {Universitat Politècnica de València (ETSINF), Spain}
-      {Coursework: Network Information Security Technologies, Computer Architecture}
+      {}
     \end{timeline}
 
   \end{minipage}
